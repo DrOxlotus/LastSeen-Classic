@@ -314,6 +314,7 @@ addonTbl.GetItemInfo = function(itemLink, slot)
 						itemName = LastSeenClassicItemsDB[itemID]["itemName"];
 						itemRarity = LastSeenClassicItemsDB[itemID]["itemRarity"];
 					else
+						itemName = (GetItemInfo(itemLink));
 						itemRarity = select(3, GetItemInfo(itemLink));
 					end
 					addonTbl.itemsToSource[itemID] = tonumber(creatureID);

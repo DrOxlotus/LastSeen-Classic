@@ -9,7 +9,7 @@ local itemType;
 local itemIcon;
 local questTitle;
 
-addonTbl.AddQuest = function(questID, currentDate)
+--[[addonTbl.AddQuest = function(questID, currentDate)
 	local questLink = GetQuestLink(questID);
 	
 	if LastSeenQuestsDB[questID] then
@@ -17,13 +17,15 @@ addonTbl.AddQuest = function(questID, currentDate)
 	else
 		LastSeenQuestsDB[questID] = {questTitle = questTitle, lastCompleted = currentDate, questLink = questLink};
 	end
-end
+end]]
 -- Synopsis: Add the quest into the quests table so it can be used as a source if the player gets a quest reward that should be tracked.
+-- Reason for Comment: This event is unavailable in Classic.
 
-addonTbl.GetQuestInfo = function(questIndex)
+--[[addonTbl.GetQuestInfo = function(questIndex)
 	questTitle = (GetQuestLogTitle(questIndex));
 	local questID = select(8, GetQuestLogTitle(questIndex));
 	addonTbl.AddQuest(questID, addonTbl.currentDate);
-end
+end]]
 -- Synopsis: It's easier to request information about a quest when it's accepted than once it's completed.
 -- Ask Blizzard for the quest's name and ID. These are passed on to the AddQuest function.
+-- Reason for Comment: This event is unavailable in Classic.

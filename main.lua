@@ -240,7 +240,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 	end
 	-- Synopsis: Captures the quest ID so a lookup can be done for its name.
 	
-	if event == "QUEST_LOOT_RECEIVED" then
+	--[[if event == "QUEST_LOOT_RECEIVED" then
 		addonTbl.questID, itemLink = ...; addonTbl.AddQuest(addonTbl.questID, addonTbl.currentDate);
 		itemID = (GetItemInfoInstant(itemLink));
 		itemName = (GetItemInfo(itemLink));
@@ -270,8 +270,9 @@ frame:SetScript("OnEvent", function(self, event, ...)
 				addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Quest", LastSeenQuestsDB[addonTbl.questID]["questTitle"], "New");
 			end
 		end
-	end
+	end]]
 	-- Synopsis: Fires whenever a player completes a quest and receives a quest reward. This tracks the reward by the name of the quest.
+	-- Reason for Comment: This event is unavailable in Classic.
 	
 	if event == "MAIL_INBOX_UPDATE" then
 		local mailItems = GetInboxNumItems();

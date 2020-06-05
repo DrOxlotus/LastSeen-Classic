@@ -47,8 +47,6 @@ if LOCALE == "ruRU" then -- Russian
 	L["INFO_MSG_ADDON_LOAD_SUCCESSFUL"] 		= "Заряжено успешно!";
 	L["INFO_MSG_IGNORED_ITEM"] 					= "Этот пункт автоматически игнорируется.";
 	L["INFO_MSG_ITEM_REMOVED"] 					= " успешно удалено.";
-	L["INFO_MSG_LOOT_ENABLED"] 					= "Включен режим Loot Fast.";
-	L["INFO_MSG_LOOT_DISABLED"] 				= "Режим Loot Fast отключен.";
 	L["INFO_MSG_MISCELLANEOUS"]					= "Разное";
 	L["INFO_MSG_POSTMASTER"]					= "Почтмейстер";
 	L["INFO_MSG_RESULTS"]						= " результат(ы)";

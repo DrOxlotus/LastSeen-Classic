@@ -47,8 +47,6 @@ if LOCALE == "deDE" then -- German
 	L["INFO_MSG_ADDON_LOAD_SUCCESSFUL"] 		= "Erfolgreich geladen!";
 	L["INFO_MSG_IGNORED_ITEM"] 					= "Dieser Punkt wird automatisch ignoriert.";
 	L["INFO_MSG_ITEM_REMOVED"] 					= " erfolgreich entfernt.";
-	L["INFO_MSG_LOOT_ENABLED"] 					= "Beute Schnellmodus aktiviert.";
-	L["INFO_MSG_LOOT_DISABLED"] 				= "Beute Schnellmodus deaktiviert.";
 	L["INFO_MSG_MISCELLANEOUS"]					= "Verschiedene Funktionen";
 	L["INFO_MSG_POSTMASTER"]					= "Der Postmeister";
 	L["INFO_MSG_RESULTS"]						= " ergebnis(se)";

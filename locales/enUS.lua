@@ -46,7 +46,6 @@ if LOCALE == "enUS" then
 	-- INFORMATIONAL MESSAGES		
 	L["INFO_MSG_ADDON_LOAD_SUCCESSFUL"] 		= "Loaded successfully!";
 	L["INFO_MSG_IGNORED_ITEM"] 					= "This item is automatically ignored.";
-	L["INFO_MSG_ITEM_ADDED"] 					= " successfully added.";
 	L["INFO_MSG_ITEM_REMOVED"] 					= " successfully removed.";
 	L["INFO_MSG_MISCELLANEOUS"]					= "Miscellaneous";
 	L["INFO_MSG_POSTMASTER"]					= "The Postmaster";

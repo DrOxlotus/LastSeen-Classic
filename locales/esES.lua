@@ -46,7 +46,6 @@ if LOCALE == "esES" or LOCALE == "esMX" then
 	-- INFORMATIONAL MESSAGES		
 	L["INFO_MSG_ADDON_LOAD_SUCCESSFUL"] 		= "¡Cargado con éxito!";
 	L["INFO_MSG_IGNORED_ITEM"] 					= "Este elemento se ignora automáticamente.";
-	L["INFO_MSG_ITEM_ADDED"] 					= " añadido con éxito...";
 	L["INFO_MSG_ITEM_REMOVED"] 					= " removido con éxito...";
 	L["INFO_MSG_MISCELLANEOUS"]					= "Funciones varias";
 	L["INFO_MSG_POSTMASTER"]					= "El Jefe de Correos";

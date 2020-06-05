@@ -23,32 +23,32 @@ end
 addonTbl.Remove = function(arg)
 	if tonumber(arg) then -- The passed argument is a number or item ID.
 		arg = tonumber(arg);
-		if LastSeenItemsDB[arg] then
-			if LastSeenItemsDB[arg].itemLink ~= nil then
-				print(L["ADDON_NAME"] .. LastSeenItemsDB[arg].itemLink .. L["INFO_MSG_ITEM_REMOVED"]);
+		if LastSeenClassicItemsDB[arg] then
+			if LastSeenClassicItemsDB[arg].itemLink ~= nil then
+				print(L["ADDON_NAME"] .. LastSeenClassicItemsDB[arg].itemLink .. L["INFO_MSG_ITEM_REMOVED"]);
 			else
 				print(L["ADDON_NAME"] .. arg .. L["INFO_MSG_ITEM_REMOVED"]);
 			end
-			LastSeenItemsDB[arg] = nil;
+			LastSeenClassicItemsDB[arg] = nil;
 		end
 	elseif not tonumber(arg) then -- The passed argument isn't a number, and is likely an item's link.
 		arg = (GetItemInfoInstant(arg)); -- Converts the supposed item link into an item ID.
 		if tonumber(arg) then
 			arg = tonumber(arg);
-			if LastSeenItemsDB[arg] then
-				if LastSeenItemsDB[arg].itemLink ~= nil then
-					print(L["ADDON_NAME"] .. LastSeenItemsDB[arg].itemLink .. L["INFO_MSG_ITEM_REMOVED"]);
+			if LastSeenClassicItemsDB[arg] then
+				if LastSeenClassicItemsDB[arg].itemLink ~= nil then
+					print(L["ADDON_NAME"] .. LastSeenClassicItemsDB[arg].itemLink .. L["INFO_MSG_ITEM_REMOVED"]);
 				else
 					print(L["ADDON_NAME"] .. arg .. L["INFO_MSG_ITEM_REMOVED"]);
 				end
-				LastSeenItemsDB[arg] = nil;
+				LastSeenClassicItemsDB[arg] = nil;
 			end
 		end
 	else
 		print(L["ADDON_NAME"] .. L["ERROR_MSG_BAD_REQUEST"]);
 	end
 	
-	if (LastSeenLootTemplate[arg]) then LastSeenLootTemplate[arg] = nil end; -- Remove all associated entries that the player looted the item from.
+	if (LastSeenClassicLootTemplate[arg]) then LastSeenClassicLootTemplate[arg] = nil end; -- Remove all associated entries that the player looted the item from.
 end
 -- Synopsis: Allows the player to remove undesired items from the items table using its ID or link.
 
@@ -60,23 +60,23 @@ addonTbl.Search = function(query)
 	if queryType == L["SEARCH_OPTION_I"] then -- Item search
 		if tonumber(query) ~= nil then
 			query = tonumber(query);
-			if LastSeenItemsDB[query] then
-				if LastSeenItemsDB[query].source ~= L["INFO_MSG_MISCELLANEOUS"] then
-					print(query .. ": " .. LastSeenItemsDB[query].itemLink .. " (" .. addonTbl.GetCount(LastSeenLootTemplate, query) .. ") | " .. LastSeenItemsDB[query].lootDate .. " | " .. LastSeenItemsDB[query].source .. " | " ..
-					LastSeenItemsDB[query].location);
+			if LastSeenClassicItemsDB[query] then
+				if LastSeenClassicItemsDB[query].source ~= L["INFO_MSG_MISCELLANEOUS"] then
+					print(query .. ": " .. LastSeenClassicItemsDB[query].itemLink .. " (" .. addonTbl.GetCount(LastSeenClassicLootTemplate, query) .. ") | " .. LastSeenClassicItemsDB[query].lootDate .. " | " .. LastSeenClassicItemsDB[query].source .. " | " ..
+					LastSeenClassicItemsDB[query].location);
 					itemsFound = itemsFound + 1;
 				end
 			end
 		else
-			for k, v in pairs(LastSeenItemsDB) do
+			for k, v in pairs(LastSeenClassicItemsDB) do
 				if v.source ~= L["INFO_MSG_MISCELLANEOUS"] then
 					if v.itemName ~= nil then
 						if string.find(string.lower(v.itemName), string.lower(query)) then
 							local itemID = (GetItemInfoInstant(k));
 							if v.itemLink == "" then
-								print(k .. ": " .. v.itemName .. " (" .. addonTbl.GetCount(LastSeenLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
+								print(k .. ": " .. v.itemName .. " (" .. addonTbl.GetCount(LastSeenClassicLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
 							else
-								print(k .. ": " .. v.itemLink .. " (" .. addonTbl.GetCount(LastSeenLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
+								print(k .. ": " .. v.itemLink .. " (" .. addonTbl.GetCount(LastSeenClassicLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
 							end
 							itemsFound = itemsFound + 1;
 						end
@@ -90,15 +90,15 @@ addonTbl.Search = function(query)
 			print(L["ADDON_NAME"] .. itemsFound .. L["INFO_MSG_RESULTS"]);
 		end
 	elseif queryType == L["SEARCH_OPTION_C"] then -- Creature search
-		for k, v in pairs(LastSeenItemsDB) do
+		for k, v in pairs(LastSeenClassicItemsDB) do
 			if v.source ~= nil then
 				if v.source ~= L["INFO_MSG_MISCELLANEOUS"] then
 					if string.find(string.lower(v.source), string.lower(query)) then
 						local itemID = (GetItemInfoInstant(k));
 						if v.itemLink == "" then
-							print(k .. ": " .. v.itemName .. " (" .. addonTbl.GetCount(LastSeenLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
+							print(k .. ": " .. v.itemName .. " (" .. addonTbl.GetCount(LastSeenClassicLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
 						else
-							print(k .. ": " .. v.itemLink .. " (" .. addonTbl.GetCount(LastSeenLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
+							print(k .. ": " .. v.itemLink .. " (" .. addonTbl.GetCount(LastSeenClassicLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
 						end
 						itemsFound = itemsFound + 1;
 					end
@@ -111,18 +111,18 @@ addonTbl.Search = function(query)
 			print(L["ADDON_NAME"] .. itemsFound .. L["INFO_MSG_RESULTS"]);
 		end
 	elseif queryType == L["SEARCH_OPTION_Z"] then -- Zone search
-		for k, v in pairs(LastSeenItemsDB) do
+		for k, v in pairs(LastSeenClassicItemsDB) do
 			if v.source ~= L["INFO_MSG_MISCELLANEOUS"] then
 				if v.location ~= nil then
 					if string.find(string.lower(v.location), string.lower(query)) then
 						local itemID = (GetItemInfoInstant(k));
 						if v.itemLink == "" then
-							print(k .. ": " .. v.itemName .. " (" .. addonTbl.GetCount(LastSeenLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
+							print(k .. ": " .. v.itemName .. " (" .. addonTbl.GetCount(LastSeenClassicLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
 						else
 							if v.lootDate == nil then
 								--
 							else
-								print(k .. ": " .. v.itemLink .. " (" .. addonTbl.GetCount(LastSeenLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
+								print(k .. ": " .. v.itemLink .. " (" .. addonTbl.GetCount(LastSeenClassicLootTemplate, itemID) .. ") | " .. v.lootDate .. " | " .. v.source .. " | " .. v.location);
 							end
 						end
 						itemsFound = itemsFound + 1;
@@ -152,8 +152,8 @@ addonTbl.GetCurrentMap = function()
 	if uiMapID then -- A map ID was found and is usable.
 		local uiMap = C_Map.GetMapInfo(uiMapID);
 		if not uiMap.mapID then return end;
-		if not LastSeenMapsDB[uiMap.mapID] then
-			LastSeenMapsDB[uiMap.mapID] = uiMap.name;
+		if not LastSeenClassicMapsDB[uiMap.mapID] then
+			LastSeenClassicMapsDB[uiMap.mapID] = uiMap.name;
 		end
 
 		addonTbl.currentMap = uiMap.name;
@@ -170,7 +170,7 @@ addonTbl.DataIsValid = function(itemID)
 		return false;
 	end
 
-	itemDBRef = LastSeenItemsDB[itemID]
+	itemDBRef = LastSeenClassicItemsDB[itemID]
 	if itemDBRef == nil then
 		return false;
 	end
@@ -195,7 +195,7 @@ addonTbl.OnTooltipSetItem = function(tooltip)
 
 	local itemTypeID = select(12, GetItemInfo(itemID));
 
-	if LastSeenItemsDB[itemID] then -- Item exists in the database; therefore, show its data.
+	if LastSeenClassicItemsDB[itemID] then -- Item exists in the database; therefore, show its data.
 		local frame, text;
 		for i = 1, 30 do
 			frame = _G[tooltip:GetName() .. "TextLeft" .. i]
@@ -203,8 +203,8 @@ addonTbl.OnTooltipSetItem = function(tooltip)
 			if text and string.find(text, "LastSeen") then return end;
 		end
 		if addonTbl.DataIsValid(itemID) then
-			tooltip:AppendText(" (|cffadd8e6" .. LastSeenItemsDB[itemID].source .. "|r)");
-			tooltip:AddLine(L["ADDON_NAME"] .. "|cffadd8e6" .. LastSeenItemsDB[itemID].location .. "|r | |cffadd8e6" .. LastSeenItemsDB[itemID].lootDate .. "|r");
+			tooltip:AppendText(" (|cffadd8e6" .. LastSeenClassicItemsDB[itemID].source .. "|r)");
+			tooltip:AddLine(L["ADDON_NAME"] .. "|cffadd8e6" .. LastSeenClassicItemsDB[itemID].location .. "|r | |cffadd8e6" .. LastSeenClassicItemsDB[itemID].lootDate .. "|r");
 			tooltip:Show();
 		end
 	end
@@ -278,7 +278,7 @@ end
 ]]
 
 addonTbl.GetTable = function(tbl)
-	if tbl == LastSeenHistoryDB then
+	if tbl == LastSeenClassicHistoryDB then
 		for i = #tbl, 1, -1 do
 			print("|T" .. tbl[i].itemIcon .. ":0|t " .. tbl[i].itemLink .. " | " .. tbl[i].source .. " | " .. tbl[i].location .. " | " .. tbl[i].lootDate);
 		end
@@ -287,11 +287,11 @@ end
 -- Synopsis: Used to iterate over a table to get its content.
 
 addonTbl.RollHistory = function()
-	local historyEntries = addonTbl.GetCount(LastSeenHistoryDB);
+	local historyEntries = addonTbl.GetCount(LastSeenClassicHistoryDB);
 	if historyEntries > addonTbl.maxHistoryEntries then
-		for i = #LastSeenHistoryDB, 1, -1 do
+		for i = #LastSeenClassicHistoryDB, 1, -1 do
 			if i > addonTbl.maxHistoryEntries then
-				table.remove(LastSeenHistoryDB, i);
+				table.remove(LastSeenClassicHistoryDB, i);
 			end
 		end
 	end
@@ -310,9 +310,9 @@ addonTbl.GetItemInfo = function(itemLink, slot)
 				local itemID, itemType, itemSubType, itemEquipLoc, itemIcon = GetItemInfoInstant(itemLink);
 				local type, _, _, _, _, creatureID = strsplit("-", lootSources[j]);
 				if itemID then -- To catch items without an item ID.
-					if LastSeenItemsDB[itemID] then
-						itemName = LastSeenItemsDB[itemID]["itemName"];
-						itemRarity = LastSeenItemsDB[itemID]["itemRarity"];
+					if LastSeenClassicItemsDB[itemID] then
+						itemName = LastSeenClassicItemsDB[itemID]["itemName"];
+						itemRarity = LastSeenClassicItemsDB[itemID]["itemRarity"];
 					else
 						itemRarity = select(3, GetItemInfo(itemLink));
 					end
@@ -325,11 +325,11 @@ addonTbl.GetItemInfo = function(itemLink, slot)
 						if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemEquipLoc) then return end;
 						if addonTbl.Contains(addonTbl.ignoredItems, itemID, nil, nil) then return end;
 						
-						if LastSeenItemsDB[itemID] then -- Item seen again.
-							if LastSeenCreaturesDB[addonTbl.itemSourceCreatureID] then
-								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Creature", LastSeenCreaturesDB[addonTbl.itemSourceCreatureID].unitName, "Update");
+						if LastSeenClassicItemsDB[itemID] then -- Item seen again.
+							if LastSeenClassicCreaturesDB[addonTbl.itemSourceCreatureID] then
+								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Creature", LastSeenClassicCreaturesDB[addonTbl.itemSourceCreatureID].unitName, "Update");
 							elseif addonTbl.encounterID then
-								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Encounter", LastSeenEncountersDB[addonTbl.encounterID], "Update");
+								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Encounter", LastSeenClassicEncountersDB[addonTbl.encounterID], "Update");
 							elseif addonTbl.target then
 								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Object", addonTbl.target, "Update");
 							else
@@ -337,10 +337,10 @@ addonTbl.GetItemInfo = function(itemLink, slot)
 								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Miscellaneous", L["INFO_MSG_MISCELLANEOUS"], "Update");
 							end
 						else -- Item seen for first time.
-							if LastSeenCreaturesDB[addonTbl.itemSourceCreatureID] then
-								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Creature", LastSeenCreaturesDB[addonTbl.itemSourceCreatureID].unitName, "New");
+							if LastSeenClassicCreaturesDB[addonTbl.itemSourceCreatureID] then
+								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Creature", LastSeenClassicCreaturesDB[addonTbl.itemSourceCreatureID].unitName, "New");
 							elseif addonTbl.encounterID then
-								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Encounter", LastSeenEncountersDB[addonTbl.encounterID], "New");
+								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Encounter", LastSeenClassicEncountersDB[addonTbl.encounterID], "New");
 							elseif addonTbl.target then
 								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Object", addonTbl.target, "New");
 							else

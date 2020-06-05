@@ -15,20 +15,20 @@ local modeList;
 local areOptionsOpen = false;
 
 local function GetOptions(arg)
-	if LastSeenSettingsCacheDB[arg] ~= nil then
-		addonTbl[arg] = LastSeenSettingsCacheDB[arg];
+	if LastSeenClassicSettingsCacheDB[arg] ~= nil then
+		addonTbl[arg] = LastSeenClassicSettingsCacheDB[arg];
 		return addonTbl[arg];
 	else
 		if arg == "mode" then
-			LastSeenSettingsCacheDB[arg] = L["NORMAL_MODE"]; addonTbl[arg] = LastSeenSettingsCacheDB[arg];
+			LastSeenClassicSettingsCacheDB[arg] = L["NORMAL_MODE"]; addonTbl[arg] = LastSeenClassicSettingsCacheDB[arg];
 			return addonTbl[arg];
 		end
 		if arg == "rarity" then
-			LastSeenSettingsCacheDB[arg] = 2; addonTbl[arg] = LastSeenSettingsCacheDB[arg];
+			LastSeenClassicSettingsCacheDB[arg] = 2; addonTbl[arg] = LastSeenClassicSettingsCacheDB[arg];
 			return addonTbl[arg];
 		end
 		if arg == "lootFast" then
-			LastSeenSettingsCacheDB[arg] = true; addonTbl[arg] = LastSeenSettingsCacheDB[arg];
+			LastSeenClassicSettingsCacheDB[arg] = true; addonTbl[arg] = LastSeenClassicSettingsCacheDB[arg];
 			return addonTbl[arg];
 		end
 	end
@@ -37,7 +37,7 @@ end
 -- value of the mode, rarity, and lootFast variables.
 
 local function ModeDropDownMenu_OnClick(self, arg1)
-	LastSeenSettingsCacheDB["mode"] = arg1; addonTbl["mode"] = arg1;
+	LastSeenClassicSettingsCacheDB["mode"] = arg1; addonTbl["mode"] = arg1;
 	UIDropDownMenu_SetText(settingsFrame.modeDropDown, arg1);
 end
 -- Synopsis: Changes the value of the mode dropdown to whatever the player selects.
@@ -99,13 +99,13 @@ local function SettingsMenu_OnShow()
 		settingsFrame.itemCount = settingsFrame:CreateFontString(nil, "OVERLAY");
 		settingsFrame.itemCount:SetFontObject("GameFontHighlight");
 		settingsFrame.itemCount:SetPoint("CENTER", settingsFrame, "CENTER", 0, -25);
-		settingsFrame.itemCount:SetText(addonTbl.GetCount(LastSeenItemsDB));
+		settingsFrame.itemCount:SetText(addonTbl.GetCount(LastSeenClassicItemsDB));
 	end
 	-- Synopsis: This is a count of how many items the player has seen. It counts from the cached database so
 	-- players will need to reload to see items that were just looted.
 
-	if LastSeenSettingsCacheDB.mode then
-		UIDropDownMenu_SetText(settingsFrame.modeDropDown, LastSeenSettingsCacheDB.mode);
+	if LastSeenClassicSettingsCacheDB.mode then
+		UIDropDownMenu_SetText(settingsFrame.modeDropDown, LastSeenClassicSettingsCacheDB.mode);
 	end
 	-- Synopsis: Sets the value of the mode dropdown to whatever the settings cache holds for that value.
 	
@@ -137,7 +137,7 @@ end
 
 addonTbl.LoadSettings = function(doNotOpen)
 	if doNotOpen then
-		LastSeenSettingsCacheDB = {mode = GetOptions("mode"), rarity = GetOptions("rarity"), lootFast = GetOptions("lootFast")};
+		LastSeenClassicSettingsCacheDB = {mode = GetOptions("mode"), rarity = GetOptions("rarity"), lootFast = GetOptions("lootFast")};
 	else
 		if areOptionsOpen then
 			SettingsMenu_OnClose();

@@ -20,13 +20,13 @@ SlashCmdList["LastSeen"] = function(cmd, editbox)
 			end
 		end
 	elseif cmd == L["CMD_HISTORY"] then -- Allows the player to view the last 20 items they've acquired. This is persistent between sessions and characters.
-		addonTbl.GetTable(LastSeenHistoryDB);
+		addonTbl.GetTable(LastSeenClassicHistoryDB);
 	elseif cmd == L["CMD_LOOT"] then -- Enables or disables a faster loot speed.
 		if addonTbl.lootFast then
-			addonTbl.lootFast = not addonTbl.lootFast; LastSeenSettingsCacheDB.lootFast = addonTbl.lootFast;
+			addonTbl.lootFast = not addonTbl.lootFast; LastSeenClassicSettingsCacheDB.lootFast = addonTbl.lootFast;
 			print(L["ADDON_NAME"] .. L["INFO_MSG_LOOT_DISABLED"]);
 		else
-			addonTbl.lootFast = true; LastSeenSettingsCacheDB.lootFast = addonTbl.lootFast;
+			addonTbl.lootFast = true; LastSeenClassicSettingsCacheDB.lootFast = addonTbl.lootFast;
 			print(L["ADDON_NAME"] .. L["INFO_MSG_LOOT_ENABLED"]);
 		end
 	elseif cmd == L["CMD_DISCORD"] then -- Gives the player the link to the Discord server.
@@ -35,14 +35,14 @@ SlashCmdList["LastSeen"] = function(cmd, editbox)
 		if IsAddOnLoaded("LastSeen2") then
 			local doImport = false;
 			for k, v in pairs(LastSeen2ItemsDB) do
-				for i, j in pairs(LastSeenItemsDB) do
+				for i, j in pairs(LastSeenClassicItemsDB) do
 					if i == k then
 						doImport = false; break;
 					else
 						doImport = true;
 					end
 				end
-				if doImport then table.insert(LastSeenItemsDB, k) end;
+				if doImport then table.insert(LastSeenClassicItemsDB, k) end;
 			end
 		end
 	end

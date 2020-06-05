@@ -72,17 +72,17 @@ end
 frame:SetScript("OnEvent", function(self, event, ...)
 	
 	if event == "PLAYER_LOGIN" and addonTbl.isLastSeenLoaded then
-		if LastSeenMapsDB == nil then LastSeenMapsDB = InitializeTable(LastSeenMapsDB) end;
-		if LastSeenCreaturesDB == nil then LastSeenCreaturesDB = InitializeTable(LastSeenCreaturesDB) end;
-		if LastSeenEncountersDB == nil then LastSeenEncountersDB = InitializeTable(LastSeenEncountersDB) end;
-		if LastSeenItemsDB == nil then LastSeenItemsDB = InitializeTable(LastSeenItemsDB) end;
-		if LastSeenQuestsDB == nil then LastSeenQuestsDB = InitializeTable(LastSeenQuestsDB) end;
-		if LastSeenSettingsCacheDB == nil then LastSeenSettingsCacheDB = InitializeTable(LastSeenSettingsCacheDB) end;
-		if LastSeenLootTemplate == nil then LastSeenLootTemplate = InitializeTable(LastSeenLootTemplate) end;
-		if LastSeenHistoryDB == nil then LastSeenHistoryDB = InitializeTable(LastSeenHistoryDB) end;
+		if LastSeenClassicMapsDB == nil then LastSeenClassicMapsDB = InitializeTable(LastSeenClassicMapsDB) end;
+		if LastSeenClassicCreaturesDB == nil then LastSeenClassicCreaturesDB = InitializeTable(LastSeenClassicCreaturesDB) end;
+		if LastSeenClassicEncountersDB == nil then LastSeenClassicEncountersDB = InitializeTable(LastSeenClassicEncountersDB) end;
+		if LastSeenClassicItemsDB == nil then LastSeenClassicItemsDB = InitializeTable(LastSeenClassicItemsDB) end;
+		if LastSeenClassicQuestsDB == nil then LastSeenClassicQuestsDB = InitializeTable(LastSeenClassicQuestsDB) end;
+		if LastSeenClassicSettingsCacheDB == nil then LastSeenClassicSettingsCacheDB = InitializeTable(LastSeenClassicSettingsCacheDB) end;
+		if LastSeenClassicLootTemplate == nil then LastSeenClassicLootTemplate = InitializeTable(LastSeenClassicLootTemplate) end;
+		if LastSeenClassicHistoryDB == nil then LastSeenClassicHistoryDB = InitializeTable(LastSeenClassicHistoryDB) end;
 		-- Synopsis: Initialize the tables if they're nil. This is usually only for players that first install the addon.
 		
-		LastSeenIgnoredItemsDB = {};
+		LastSeenClassicIgnoredItemsDB = {};
 		-- Synopsis: Empty tables that will no longer be used. These tables will eventually be removed from the addon altogether.
 		
 		addonTbl.LoadSettings(true);
@@ -91,16 +91,16 @@ frame:SetScript("OnEvent", function(self, event, ...)
 		print(L["ADDON_NAME"] .. L["INFO_MSG_ADDON_LOAD_SUCCESSFUL"]);
 		-- Synopsis: Stuff that needs to be checked or loaded into memory at logon or reload.
 
-		for k, v in pairs(LastSeenItemsDB) do -- If there are any items with bad data found or are in the ignored database, then simply remove them.
+		for k, v in pairs(LastSeenClassicItemsDB) do -- If there are any items with bad data found or are in the ignored database, then simply remove them.
 			if not addonTbl.DataIsValid(k) then
 				table.insert(addonTbl.removedItems, v.itemLink);
-				LastSeenItemsDB[k] = nil;
+				LastSeenClassicItemsDB[k] = nil;
 				badDataItemCount = badDataItemCount + 1;
 			end
 			-- Synopsis: Check to see if any fields for the item return nil, if so, then remove the item from the items table.
 			if addonTbl.ignoredItems[k] then
 				table.insert(addonTbl.removedItems, v.itemLink);
-				LastSeenItemsDB[k] = nil;
+				LastSeenClassicItemsDB[k] = nil;
 				badDataItemCount = badDataItemCount + 1;
 			end
 			-- Synopsis: If the item is found on the addon-controlled ignores table, then remove it from the items table. Sometimes stuff slipped through the cracks.
@@ -112,7 +112,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 			-- Synopsis: For a short period of time, itemRarity and itemType were flipped in a function call. This works to correct them and flip them back.
 			if v.itemRarity < 2 then
 				table.insert(addonTbl.removedItems, v.itemLink);
-				LastSeenItemsDB[k] = nil;
+				LastSeenClassicItemsDB[k] = nil;
 				badDataItemCount = badDataItemCount + 1;
 			end
 			-- Synopsis: If someone used LastSeen2 for a short period of time, then they will have Common (white) quality quest rewards that need to be removed.
@@ -170,7 +170,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 	
 	if event == "ENCOUNTER_START" then
 		local _, encounterName = ...;
-		addonTbl.encounterID = addonTbl.GetTableKeyFromValue(LastSeenEncountersDB, encounterName);
+		addonTbl.encounterID = addonTbl.GetTableKeyFromValue(LastSeenClassicEncountersDB, encounterName);
 	end
 	-- Synopsis: Used to capture the encounter ID for the current instance encounter.
 	
@@ -213,7 +213,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 	
 	if event == "CHAT_MSG_LOOT" then
 		if addonTbl.encounterID then return end;
-		if LastSeenQuestsDB[addonTbl.questID] then return end;
+		if LastSeenClassicQuestsDB[addonTbl.questID] then return end;
 		if isMerchantFrameOpen then return end;
 		
 		local text, name = ...; name = string.match(name, "(.*)-");
@@ -224,7 +224,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 				itemName = (GetItemInfo(text));
 				itemRarity = select(3, GetItemInfo(text));
 				
-				if LastSeenItemsDB[itemID] then
+				if LastSeenClassicItemsDB[itemID] then
 					addonTbl.AddItem(itemID, text, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Miscellaneous", L["INFO_MSG_MISCELLANEOUS"], "Update");
 				else
 					addonTbl.AddItem(itemID, text, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Miscellaneous", L["INFO_MSG_MISCELLANEOUS"], "New");
@@ -250,7 +250,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 		itemEquipLoc = select(9, GetItemInfo(itemLink));
 		itemIcon = select(5, GetItemInfoInstant(itemLink));
 		
-		if not LastSeenQuestsDB[addonTbl.questID] then return end;
+		if not LastSeenClassicQuestsDB[addonTbl.questID] then return end;
 		
 		if itemRarity >= addonTbl.rarity then
 			for k, v in pairs(addonTbl.ignoredItemCategories) do
@@ -264,10 +264,10 @@ frame:SetScript("OnEvent", function(self, event, ...)
 				end
 			end
 		
-			if LastSeenItemsDB[itemID] then
-				addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Quest", LastSeenQuestsDB[addonTbl.questID]["questTitle"], "Update");
+			if LastSeenClassicItemsDB[itemID] then
+				addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Quest", LastSeenClassicQuestsDB[addonTbl.questID]["questTitle"], "Update");
 			else
-				addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Quest", LastSeenQuestsDB[addonTbl.questID]["questTitle"], "New");
+				addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Quest", LastSeenClassicQuestsDB[addonTbl.questID]["questTitle"], "New");
 			end
 		end
 	end]]
@@ -289,7 +289,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 								itemRarity = select(3, GetItemInfo(itemLink));
 								if itemRarity >= addonTbl.rarity then
 									if addonTbl.Contains(addonTbl.ignoredItems, itemID, nil, nil) then return end;
-									if LastSeenItemsDB[itemID] then
+									if LastSeenClassicItemsDB[itemID] then
 										addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Auction", L["AUCTION_HOUSE"], "Update");
 									else
 										addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Auction", L["AUCTION_HOUSE"], "New");
@@ -307,7 +307,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 							itemRarity = select(3, GetItemInfo(itemLink));
 							if itemRarity >= addonTbl.rarity then
 								if addonTbl.Contains(addonTbl.ignoredItems, itemID, nil, nil) then return end;
-								if LastSeenItemsDB[itemID] then
+								if LastSeenClassicItemsDB[itemID] then
 									addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "The Postmaster", L["INFO_MSG_POSTMASTER"], "Update");
 								else
 									addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "The Postmaster", L["INFO_MSG_POSTMASTER"], "New");

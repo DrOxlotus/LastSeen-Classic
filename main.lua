@@ -240,40 +240,6 @@ frame:SetScript("OnEvent", function(self, event, ...)
 	end
 	-- Synopsis: Captures the quest ID so a lookup can be done for its name.
 	
-	--[[if event == "QUEST_LOOT_RECEIVED" then
-		addonTbl.questID, itemLink = ...; addonTbl.AddQuest(addonTbl.questID, addonTbl.currentDate);
-		itemID = (GetItemInfoInstant(itemLink));
-		itemName = (GetItemInfo(itemLink));
-		itemRarity = select(3, GetItemInfo(itemLink));
-		itemType = select(6, GetItemInfo(itemLink));
-		itemSubType = select(7, GetItemInfo(itemLink));
-		itemEquipLoc = select(9, GetItemInfo(itemLink));
-		itemIcon = select(5, GetItemInfoInstant(itemLink));
-		
-		if not LastSeenClassicQuestsDB[addonTbl.questID] then return end;
-		
-		if itemRarity >= addonTbl.rarity then
-			for k, v in pairs(addonTbl.ignoredItemCategories) do
-				if itemType == v and not addonTbl.doNotIgnore then
-					return;
-				end
-			end
-			for k, v in pairs(addonTbl.ignoredItems) do
-				if itemID == k and not addonTbl.doNotIgnore then
-					return;
-				end
-			end
-		
-			if LastSeenClassicItemsDB[itemID] then
-				addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Quest", LastSeenClassicQuestsDB[addonTbl.questID]["questTitle"], "Update");
-			else
-				addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Quest", LastSeenClassicQuestsDB[addonTbl.questID]["questTitle"], "New");
-			end
-		end
-	end]]
-	-- Synopsis: Fires whenever a player completes a quest and receives a quest reward. This tracks the reward by the name of the quest.
-	-- Reason for Comment: This event is unavailable in Classic.
-	
 	if event == "MAIL_INBOX_UPDATE" then
 		local mailItems = GetInboxNumItems();
 		if mailItems > 0 then

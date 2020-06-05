@@ -48,8 +48,6 @@ if LOCALE == "esES" or LOCALE == "esMX" then
 	L["INFO_MSG_IGNORED_ITEM"] 					= "Este elemento se ignora automáticamente.";
 	L["INFO_MSG_ITEM_ADDED"] 					= " añadido con éxito...";
 	L["INFO_MSG_ITEM_REMOVED"] 					= " removido con éxito...";
-	L["INFO_MSG_LOOT_ENABLED"] 					= "Modo Loot Fast habilitado.";
-	L["INFO_MSG_LOOT_DISABLED"] 				= "Modo rápido de saqueo desactivado.";
 	L["INFO_MSG_MISCELLANEOUS"]					= "Funciones varias";
 	L["INFO_MSG_POSTMASTER"]					= "El Jefe de Correos";
 	L["INFO_MSG_RESULTS"]						= " resultado(s)"

@@ -21,14 +21,6 @@ SlashCmdList["LastSeen"] = function(cmd, editbox)
 		end
 	elseif cmd == L["CMD_HISTORY"] then -- Allows the player to view the last 20 items they've acquired. This is persistent between sessions and characters.
 		addonTbl.GetTable(LastSeenClassicHistoryDB);
-	elseif cmd == L["CMD_LOOT"] then -- Enables or disables a faster loot speed.
-		if addonTbl.lootFast then
-			addonTbl.lootFast = not addonTbl.lootFast; LastSeenClassicSettingsCacheDB.lootFast = addonTbl.lootFast;
-			print(L["ADDON_NAME"] .. L["INFO_MSG_LOOT_DISABLED"]);
-		else
-			addonTbl.lootFast = true; LastSeenClassicSettingsCacheDB.lootFast = addonTbl.lootFast;
-			print(L["ADDON_NAME"] .. L["INFO_MSG_LOOT_ENABLED"]);
-		end
 	elseif cmd == L["CMD_DISCORD"] then -- Gives the player the link to the Discord server.
 		print(L["ADDON_NAME"] .. "https://discord.gg/9GFDsgy" .. ".");
 	elseif cmd == L["CMD_IMPORT"] then -- If the player used LastSeen2 for a short period, this command allows them to import the items from that table into the present table.

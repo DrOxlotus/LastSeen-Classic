@@ -221,9 +221,8 @@ frame:SetScript("OnEvent", function(self, event, ...)
 			text = string.match(text, L["LOOT_ITEM_PUSHED_SELF"] .. "(.*).");
 			if text then
 				local itemID, itemType, itemSubType, itemEquipLoc, itemIcon = GetItemInfoInstant(text);
-				itemName = (GetItemInfo(text));
-				itemRarity = select(3, GetItemInfo(text));
-				
+				itemName = (GetItemInfo(itemID));
+				itemRarity = select(3, GetItemInfo(itemID));
 				if LastSeenClassicItemsDB[itemID] then
 					addonTbl.AddItem(itemID, text, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Miscellaneous", L["INFO_MSG_MISCELLANEOUS"], "Update");
 				else

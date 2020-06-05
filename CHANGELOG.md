@@ -2,5 +2,6 @@
 ### Added
 
 ### Changed
+- Removed the 'loot' command, as a faster loot speed isn't possible.
 
 ### Fixed

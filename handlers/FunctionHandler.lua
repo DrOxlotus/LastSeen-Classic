@@ -319,7 +319,7 @@ addonTbl.GetItemInfo = function(itemLink, slot)
 					addonTbl.itemsToSource[itemID] = tonumber(creatureID);
 					addonTbl.itemSourceCreatureID = addonTbl.itemsToSource[itemID];
 					
-					if itemRarity >= addonTbl.rarity then
+					--if itemRarity >= addonTbl.rarity then
 						if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemType) then return end;
 						if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemSubType) then return end;
 						if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemEquipLoc) then return end;
@@ -348,7 +348,7 @@ addonTbl.GetItemInfo = function(itemLink, slot)
 								addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Miscellaneous", L["INFO_MSG_MISCELLANEOUS"], "New");
 							end
 						end
-					end
+					--end
 				end
 			end
 		end

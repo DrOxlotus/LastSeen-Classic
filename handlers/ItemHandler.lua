@@ -20,21 +20,7 @@ addonTbl.New = function(itemID, itemLink, itemName, itemRarity, itemType, itemSu
 	
 	LastSeenClassicLootTemplate[itemID] = {[source] = 1};
 	
-	local _, sourceID = C_TransmogCollection.GetItemInfo(itemID);
-	if sourceID then
-		LastSeenClassicItemsDB[itemID]["sourceIDs"][sourceID] = L["DATE"];
-	end
-	
-	if sourceID and addonTbl.mode ~= L["QUIET_MODE"] then
-		if itemType == "Armor" or itemType == "Weapon" then
-			local isAppearanceKnown = C_TransmogCollection.GetSourceInfo(sourceID).isCollected;
-			if isAppearanceKnown then
-				print(L["ADDON_NAME"] .. "Added " .. "|TInterface\\Addons\\LastSeen\\Assets\\known:0|t |T" .. itemIcon .. ":0|t " .. itemLink .. " - " .. source);
-			else
-				print(L["ADDON_NAME"] .. "Added " .. "|TInterface\\Addons\\LastSeen\\Assets\\unknown:0|t |T" .. itemIcon .. ":0|t " .. itemLink .. " - " .. source);
-			end
-		end
-	else
+	if addonTbl.mode ~= L["QUIET_MODE"] then
 		print(L["ADDON_NAME"] .. "Added " .. "|T" .. itemIcon .. ":0|t " .. itemLink .. " - " .. source);
 	end
 	
@@ -86,35 +72,8 @@ addonTbl.Update = function(itemID, itemLink, itemName, itemRarity, itemType, ite
 		LastSeenClassicLootTemplate[itemID] = {[source] = 1};
 	end
 	
-	local _, sourceID = C_TransmogCollection.GetItemInfo(itemID);
-	local sourceTblSize = table.getn(LastSeenClassicItemsDB[itemID]["sourceIDs"]);
-	if sourceID then
-		if (sourceTblSize < 1) then
-			LastSeenClassicItemsDB[itemID]["sourceIDs"][sourceID] = currentDate;
-		else
-			for k, v in pairs(LastSeenClassicItemsDB[itemID]["sourceIDs"]) do
-				if (k == sourceID) then
-					if (v ~= currentDate) then
-						v = currentDate;
-					end
-				end
-			end
-		end
-	end
-	
 	if addonTbl.wasUpdated and addonTbl.mode ~= L["QUIET_MODE"] then
-		if sourceID then
-			if itemType == "Armor" or itemType == "Weapon" then
-				local isAppearanceKnown = C_TransmogCollection.GetSourceInfo(sourceID).isCollected;
-				if isAppearanceKnown then
-					print(L["ADDON_NAME"] .. "Updated " .. "|TInterface\\Addons\\LastSeen\\Assets\\known:0|t |T" .. itemIcon .. ":0|t " .. itemLink .. " - " .. source);
-				else
-					print(L["ADDON_NAME"] .. "Updated " .. "|TInterface\\Addons\\LastSeen\\Assets\\unknown:0|t |T" .. itemIcon .. ":0|t " .. itemLink .. " - " .. source);
-				end
-			end
-		else
-			print(L["ADDON_NAME"] .. "Updated " .. "|T" .. itemIcon .. ":0|t " .. itemLink .. " - " .. source);
-		end
+		print(L["ADDON_NAME"] .. "Updated " .. "|T" .. itemIcon .. ":0|t " .. itemLink .. " - " .. source);
 		addonTbl.wasUpdated = false;
 	end
 	
@@ -131,7 +90,7 @@ end
 
 addonTbl.AddItem = function(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, currentDate, currentMap, sourceType, source, action)
 
-	if itemRarity < addonTbl.rarity then return end;
+	--if itemRarity < addonTbl.rarity then return end;
 	if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemType) then return end;
 	if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemSubType) then return end;
 	if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemEquipLoc) then return end;

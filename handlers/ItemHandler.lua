@@ -12,7 +12,7 @@ addonTbl.New = function(itemID, itemLink, itemName, itemRarity, itemType, itemSu
 	if not source or not itemID then return end; if LastSeenClassicItemsDB[itemID] then return end;
 
 	LastSeenClassicItemsDB[itemID] = {itemName = itemName, itemLink = itemLink, itemRarity = itemRarity, itemType = itemType, itemSubType = itemSubType, itemEquipLoc = itemEquipLoc, itemIcon = itemIcon, lootDate = currentDate, source = source, 
-	location = currentMap, sourceIDs = {}};
+	location = currentMap};
 	
 	if addonTbl.Contains(LastSeenClassicHistoryDB, nil, "itemLink", itemLink) ~= true then
 		table.insert(LastSeenClassicHistoryDB, 1, {itemLink = itemLink, itemIcon = itemIcon, lootDate = currentDate, source = source, location = currentMap});

@@ -91,7 +91,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 		print(L["ADDON_NAME"] .. L["INFO_MSG_ADDON_LOAD_SUCCESSFUL"]);
 		-- Synopsis: Stuff that needs to be checked or loaded into memory at logon or reload.
 
-		--[[for k, v in pairs(LastSeenClassicItemsDB) do -- If there are any items with bad data found or are in the ignored database, then simply remove them.
+		for k, v in pairs(LastSeenClassicItemsDB) do -- If there are any items with bad data found or are in the ignored database, then simply remove them.
 			if not addonTbl.DataIsValid(k) then
 				table.insert(addonTbl.removedItems, v.itemLink);
 				LastSeenClassicItemsDB[k] = nil;
@@ -116,7 +116,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 				badDataItemCount = badDataItemCount + 1;
 			end
 			-- Synopsis: If someone used LastSeen2 for a short period of time, then they will have Common (white) quality quest rewards that need to be removed.
-		end]]
+		end
 
 		if badDataItemCount > 0 and addonTbl.mode ~= L["QUIET_MODE"] then
 			print(L["ADDON_NAME"] .. badDataItemCount .. L["ERROR_MSG_BAD_DATA"]);

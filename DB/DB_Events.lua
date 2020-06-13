@@ -8,8 +8,8 @@ local events = {
 	"NAME_PLATE_UNIT_ADDED",
 	"PLAYER_LOGIN",
 	"PLAYER_LOGOUT",
-	"UPDATE_MOUSEOVER_UNIT",
 	"UNIT_SPELLCAST_SENT",
+	"UPDATE_MOUSEOVER_UNIT",
 	"ZONE_CHANGED_NEW_AREA"
 };
 -- Synopsis: These are events that must occur before the addon will take action. Each event is documented in main.lua.

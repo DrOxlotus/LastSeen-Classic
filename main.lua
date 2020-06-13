@@ -146,18 +146,6 @@ frame:SetScript("OnEvent", function(self, event, ...)
 	end
 	-- Synopsis: Get the player's map when they change zones or enter instances.
 	
-	if event == "MODIFIER_STATE_CHANGED" then
-		local key, down = ...;
-		if down == 1 then
-			if key == "LSHIFT" or key == "RSHIFT" then
-				addonTbl.doNotLoot = true;
-			end
-		else
-			addonTbl.doNotLoot = false;
-		end
-	end
-	-- Synopsis: Allows players to prevent the game from looting items like lockboxes.
-	
 	if event == "UNIT_SPELLCAST_SENT" then
 		local unit, target, _, spellID = ...; local spellName = GetSpellInfo(spellID);
 		if unit == string.lower(L["IS_PLAYER"]) then
@@ -167,12 +155,6 @@ frame:SetScript("OnEvent", function(self, event, ...)
 		end
 	end
 	-- Synopsis: Used to capture the name of an object that the player loots.
-	
-	if event == "ENCOUNTER_START" then
-		local _, encounterName = ...;
-		addonTbl.encounterID = addonTbl.GetTableKeyFromValue(LastSeenClassicEncountersDB, encounterName);
-	end
-	-- Synopsis: Used to capture the encounter ID for the current instance encounter.
 	
 	if event == "LOOT_OPENED" then
 		plsEmptyVariables = true;
@@ -206,86 +188,6 @@ frame:SetScript("OnEvent", function(self, event, ...)
 		EmptyVariables();
 	end
 	-- Synopsis: When the loot window is closed, call the EmptyVariables function.
-	
-	if event == "MERCHANT_SHOW" then isMerchantFrameOpen = true end;
-	
-	if event == "MERCHANT_CLOSED" then isMerchantFrameOpen = false end;
-	
-	if event == "CHAT_MSG_LOOT" then
-		if addonTbl.encounterID then return end;
-		if LastSeenClassicQuestsDB[addonTbl.questID] then return end;
-		if isMerchantFrameOpen then return end;
-		
-		local text, name = ...; name = string.match(name, "(.*)-");
-		if name == playerName then
-			text = string.match(text, L["LOOT_ITEM_PUSHED_SELF"] .. "(.*).");
-			if text then
-				local itemID, itemType, itemSubType, itemEquipLoc, itemIcon = GetItemInfoInstant(text);
-				itemName = (GetItemInfo(itemID));
-				itemRarity = select(3, GetItemInfo(itemID));
-				if LastSeenClassicItemsDB[itemID] then
-					addonTbl.AddItem(itemID, text, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Miscellaneous", L["INFO_MSG_MISCELLANEOUS"], "Update");
-				else
-					addonTbl.AddItem(itemID, text, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Miscellaneous", L["INFO_MSG_MISCELLANEOUS"], "New");
-				end
-			end
-		end
-	end
-	-- Synopsis: When the player is rewarded an item, usually when the player didn't loot anything by action, track it using the source of said item. Typically, we would see this occur in many cases,
-	-- but we really only care about acquisition via creatures like unlootable world bosses.
-	
-	if event == "QUEST_ACCEPTED" then
-		local questIndex = ...; addonTbl.GetQuestInfo(questIndex);
-	end
-	-- Synopsis: Captures the quest ID so a lookup can be done for its name.
-	
-	if event == "MAIL_INBOX_UPDATE" then
-		local mailItems = GetInboxNumItems();
-		if mailItems > 0 then
-			for i = 1, mailItems do
-				local _, _, sender, subject = GetInboxHeaderInfo(i);
-				if sender == L["AUCTION_HOUSE"] then
-					if strfind(subject, L["AUCTION_WON_SUBJECT"]) then
-						for j = 1, ATTACHMENTS_MAX_RECEIVE do 
-							itemLink = GetInboxItemLink(i, j);
-							if itemLink then
-								itemID, itemType, itemSubType, itemEquipLoc, itemIcon = GetItemInfoInstant(itemLink);
-								itemName = (GetItemInfo(itemLink));
-								itemRarity = select(3, GetItemInfo(itemLink));
-								if itemRarity >= addonTbl.rarity then
-									if addonTbl.Contains(addonTbl.ignoredItems, itemID, nil, nil) then return end;
-									if LastSeenClassicItemsDB[itemID] then
-										addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Auction", L["AUCTION_HOUSE"], "Update");
-									else
-										addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Auction", L["AUCTION_HOUSE"], "New");
-									end
-								end
-							end
-						end
-					end
-				elseif sender == L["INFO_MSG_POSTMASTER"] then
-					for j = 1, ATTACHMENTS_MAX_RECEIVE do
-						itemLink = GetInboxItemLink(i, j);
-						if itemLink then
-							itemID, itemType, itemSubType, itemEquipLoc, itemIcon = GetItemInfoInstant(itemLink);
-							itemName = (GetItemInfo(itemLink));
-							itemRarity = select(3, GetItemInfo(itemLink));
-							if itemRarity >= addonTbl.rarity then
-								if addonTbl.Contains(addonTbl.ignoredItems, itemID, nil, nil) then return end;
-								if LastSeenClassicItemsDB[itemID] then
-									addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "The Postmaster", L["INFO_MSG_POSTMASTER"], "Update");
-								else
-									addonTbl.AddItem(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "The Postmaster", L["INFO_MSG_POSTMASTER"], "New");
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	end
-	-- Synopsis: Used to capture items bought from the Auction House.
-	-- ATTACHMENTS_MAX_RECEIVE: 16
 
 	if event == "NAME_PLATE_UNIT_ADDED" then
 		local unit = ...;

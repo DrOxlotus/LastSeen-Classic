@@ -14,8 +14,6 @@ if LOCALE == "ruRU" then -- Russian
 	-- COMMANDS
 	L["CMD_DISCORD"]							= "discord";
 	L["CMD_HISTORY"] 							= "история";
-	L["CMD_IMPORT"] 							= "импортировать";
-	L["CMD_LOOT"] 								= "добыча";
 	L["CMD_REMOVE"] 							= "удалить";
 	L["CMD_REMOVE_SHORT"] 						= "уд";
 	L["CMD_SEARCH"] 							= "поиск";

@@ -21,6 +21,8 @@ SlashCmdList["LastSeen"] = function(cmd, editbox)
 		end
 	elseif cmd == L["CMD_HISTORY"] then -- Allows the player to view the last 20 items they've acquired. This is persistent between sessions and characters.
 		addonTbl.GetTable(LastSeenClassicHistoryDB);
+	elseif cmd == L["CMD_MAN"] then -- Allows the player to ask the addon for command usage.
+		addonTbl.Manual(args);
 	elseif cmd == L["CMD_DISCORD"] then -- Gives the player the link to the Discord server.
 		print(L["ADDON_NAME"] .. "https://discord.gg/9GFDsgy");
 	end

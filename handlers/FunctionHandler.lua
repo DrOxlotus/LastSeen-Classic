@@ -118,7 +118,7 @@ end
 addonTbl.Manual = function(args)
 	if args == "" then
 		print(L["ADDON_NAME"]);
-		print("Commands: " .. L["CMD_DISCORD"] .. ", " .. L["CMD_HISTORY"] .. ", " .. L["CMD_IMPORT"] .. ", " .. L["CMD_LOOT"] .. ", " .. L["CMD_MAN"] .. ", " .. L["CMD_REMOVE"] .. ", " .. L["CMD_SEARCH"] .. ", " .. L["CMD_VIEW"]);
+		print("Commands: " .. L["CMD_DISCORD"] .. ", " .. L["CMD_HISTORY"] .. ", " .. ", " .. L["CMD_MAN"] .. ", " .. L["CMD_REMOVE"] .. ", " .. L["CMD_SEARCH"] .. ", " .. L["CMD_VIEW"]);
 	elseif args == L["CMD_DISCORD"] then
 		print(L["ADDON_NAME"]);
 		print("Command: " .. L["CMD_DISCORD"]);

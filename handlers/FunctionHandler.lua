@@ -297,20 +297,13 @@ addonTbl.GetItemInfo = function(itemLink, slot)
 
 	if itemLink then
 		itemLink = addonTbl.ExtractItemLink(L["LOOT_ITEM_SELF"] .. itemLink); -- The item link isn't formatted correctly from the GetLootSlotLink() function.
-		local itemName;
-		local itemRarity;
+		local itemID, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon;
 		for j = 1, #lootSources, 2 do
 			if itemLink then
-				local itemID, itemType, itemSubType, itemEquipLoc, itemIcon = GetItemInfoInstant(itemLink);
+				itemName = GetItemInfo(itemLink);
+				itemID, itemType, itemSubType, itemEquipLoc, itemIcon = GetItemInfoInstant(itemLink);
 				local type, _, _, _, _, creatureID = strsplit("-", lootSources[j]);
 				if itemID then -- To catch items without an item ID.
-					if LastSeenClassicItemsDB[itemID] then
-						itemName = LastSeenClassicItemsDB[itemID]["itemName"];
-						itemRarity = LastSeenClassicItemsDB[itemID]["itemRarity"];
-					else
-						itemName = (GetItemInfo(itemLink));
-						itemRarity = select(3, GetItemInfo(itemLink));
-					end
 					addonTbl.itemsToSource[itemID] = tonumber(creatureID);
 					addonTbl.itemSourceCreatureID = addonTbl.itemsToSource[itemID];
 					

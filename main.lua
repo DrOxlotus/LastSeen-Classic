@@ -128,20 +128,8 @@ frame:SetScript("OnEvent", function(self, event, ...)
 		local lootSlots = GetNumLootItems(); addonTbl.lootSlots = lootSlots;
 		if lootSlots < 1 then return end;
 		
-		if addonTbl.lootFast then
-			if (GetTime() - epoch) >= delay then
-				for slot = lootSlots, 1, -1 do
-					addonTbl.GetItemInfo(GetLootSlotLink(slot), slot);
-					if addonTbl.doNotLoot == false then
-						LootSlot(slot);
-					end
-				end
-			end
-			epoch = GetTime();
-		else
-			for slot = lootSlots, 1, -1 do
-				addonTbl.GetItemInfo(GetLootSlotLink(slot), slot);
-			end
+		for slot = lootSlots, 1, -1 do
+			addonTbl.GetItemInfo(GetLootSlotLink(slot), slot);
 		end
 	end
 	--[[

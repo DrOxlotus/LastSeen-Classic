@@ -1,4 +1,8 @@
+-- Namespace Variables
 local addon, addonTbl = ...;
+
+-- Module-Local Variables
+local itemString;
 local L = addonTbl.L;
 local sourceIsKnown;
 
@@ -7,12 +11,16 @@ local sourceIsKnown;
 	ID may be seen. This could be due to it not being in the game as an option OR that it's no longer dropping... only time can tell.
 ]]
 
+--[[
+	Note 2: The 'known' and 'unknown' assets are from Can I Mog It? A special thanks to the author for the icons.
+]]
+
 addonTbl.New = function(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, currentDate, currentMap, sourceType, source)
 
 	if not source or not itemID then return end; if LastSeenClassicItemsDB[itemID] then return end;
 
 	LastSeenClassicItemsDB[itemID] = {itemName = itemName, itemLink = itemLink, itemRarity = itemRarity, itemType = itemType, itemSubType = itemSubType, itemEquipLoc = itemEquipLoc, itemIcon = itemIcon, lootDate = currentDate, source = source, 
-	location = currentMap};
+	location = currentMap, sourceIDs = {}};
 	
 	if addonTbl.Contains(LastSeenClassicHistoryDB, nil, "itemLink", itemLink) ~= true then
 		table.insert(LastSeenClassicHistoryDB, 1, {itemLink = itemLink, itemIcon = itemIcon, lootDate = currentDate, source = source, location = currentMap});
@@ -20,16 +28,16 @@ addonTbl.New = function(itemID, itemLink, itemName, itemRarity, itemType, itemSu
 	
 	LastSeenClassicLootTemplate[itemID] = {[source] = 1};
 	
-	if addonTbl.mode ~= L["QUIET_MODE"] then
-		print(L["ADDON_NAME"] .. "Added " .. "|T" .. itemIcon .. ":0|t " .. itemLink .. " - " .. source);
+	if addonTbl.mode ~= GM_SURVEY_NOT_APPLICABLE then
+		print(string.format(L["INFO_MSG_ITEM_ADDED_NO_SRC"], itemIcon, itemLink, source));
 	end
 	
 	addonTbl.RollHistory();
 	
-	if addonTbl.mode == L["DEBUG_MODE"] and source ~= L["AUCTION_HOUSE"] then
+	if addonTbl.mode == BINDING_HEADER_DEBUG and source ~= L["AUCTION_HOUSE"] then
 		if LastSeenClassicCreaturesDB[addonTbl.itemSourceCreatureID] then print(LastSeenClassicCreaturesDB[addonTbl.itemSourceCreatureID].unitName) else print(nil) end;
-		if addonTbl.encounterID then print(LastSeenClassicEncountersDB[addonTbl.encounterID]) else print(nil) end;
-		if LastSeenClassicQuestsDB[addonTbl.questID] then print(LastSeenClassicQuestsDB[addonTbl.questID].questTitle) else print(nil) end;
+		if addonTbl.encounterID then print(LastSeenEncountersDB[addonTbl.encounterID]) else print(nil) end;
+		if LastSeenQuestsDB[addonTbl.questID] then print(LastSeenQuestsDB[addonTbl.questID].questTitle) else print(nil) end;
 		if addonTbl.target then print(addonTbl.target) else print(nil) end;
 	end
 end
@@ -72,17 +80,18 @@ addonTbl.Update = function(itemID, itemLink, itemName, itemRarity, itemType, ite
 		LastSeenClassicLootTemplate[itemID] = {[source] = 1};
 	end
 	
-	if addonTbl.wasUpdated and addonTbl.mode ~= L["QUIET_MODE"] then
-		print(L["ADDON_NAME"] .. "Updated " .. "|T" .. itemIcon .. ":0|t " .. itemLink .. " - " .. source);
-		addonTbl.wasUpdated = false;
+	if addonTbl.wasUpdated and addonTbl.mode ~= GM_SURVEY_NOT_APPLICABLE then
+		print(string.format(L["INFO_MSG_ITEM_UPDATED_NO_SRC"], itemIcon, itemLink, source));
 	end
+	
+	addonTbl.wasUpdated = false;
 	
 	addonTbl.RollHistory();
 	
-	if addonTbl.mode == L["DEBUG_MODE"] and source ~= L["AUCTION_HOUSE"] then
+	if addonTbl.mode == BINDING_HEADER_DEBUG and source ~= L["AUCTION_HOUSE"] then
 		if LastSeenClassicCreaturesDB[addonTbl.itemSourceCreatureID] then print(LastSeenClassicCreaturesDB[addonTbl.itemSourceCreatureID].unitName) else print(nil) end;
-		if addonTbl.encounterID then print(LastSeenClassicEncountersDB[addonTbl.encounterID]) else print(nil) end;
-		if LastSeenClassicQuestsDB[addonTbl.questID] then print(LastSeenClassicQuestsDB[addonTbl.questID].questTitle) else print(nil) end;
+		if addonTbl.encounterID then print(LastSeenEncountersDB[addonTbl.encounterID]) else print(nil) end;
+		if LastSeenQuestsDB[addonTbl.questID] then print(LastSeenQuestsDB[addonTbl.questID].questTitle) else print(nil) end;
 		if addonTbl.target then print(addonTbl.target) else print(nil) end;
 	end
 end
@@ -91,12 +100,15 @@ end
 addonTbl.AddItem = function(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, currentDate, currentMap, sourceType, source, action)
 
 	if itemRarity < addonTbl.rarity then return end;
-	if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemType) then return end;
-	if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemSubType) then return end;
-	if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemEquipLoc) then return end;
-	if addonTbl.Contains(addonTbl.ignoredItems, itemID, nil, nil) then return end;
+	if addonTbl.Contains(addonTbl.whitelistedItems, itemID, nil, nil) then
+		-- Continue
+	elseif addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemType) then return;
+	elseif addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemSubType) then return;
+	elseif addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemEquipLoc) then return;
+	elseif addonTbl.Contains(addonTbl.ignoredItems, itemID, nil, nil) then return end;
 	
 	local itemSourceCreatureID = addonTbl.itemsToSource[itemID];
+	itemString = string.match(itemLink, "item[%-?%d:]+");
 	
 	if action == "Update" then
 		addonTbl.Update(itemID, itemLink, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, currentDate, currentMap, sourceType, source);

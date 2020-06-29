@@ -11,18 +11,14 @@ addonTbl.removedItems 										= removedItems;
 local doNotIgnore 											= false;
 local doNotLoot;
 local doNotUpdate 											= false;
-local isAutoLootPlusLoaded 									= IsAddOnLoaded("AutoLootPlus");
-local isFasterLootLoaded 									= IsAddOnLoaded("FasterLoot");
 local isInInstance 											= false;
-local isLastSeenLoaded 										= IsAddOnLoaded("LastSeen");
+local isLastSeenClassicLoaded 								= IsAddOnLoaded("LastSeen-Classic");
 local wasUpdated 											= false;
 addonTbl.doNotIgnore 										= doNotIgnore;
 addonTbl.doNotLoot 											= doNotLoot;
 addonTbl.doNotUpdate 										= doNotUpdate;
-addonTbl.isAutoLootPlusLoaded 								= isAutoLootPlusLoaded;
-addonTbl.isFasterLootLoaded 								= isFasterLootLoaded;
 addonTbl.isInInstance 										= isInInstance;
-addonTbl.isLastSeenLoaded 									= isLastSeenLoaded;
+addonTbl.isLastSeenClassicLoaded 							= isLastSeenClassicLoaded;
 addonTbl.wasUpdated 										= wasUpdated;
 
 -- INTEGERS

@@ -1,0 +1,25 @@
+## Interface: 11304
+## Version: 1.2
+## Title: LastSeen-Classic
+## Notes: Harvests source data on items looted by your characters to simplify item tracking in the future.
+## Author: iamlightsky
+## SavedVariables: LastSeenClassicCreaturesDB, LastSeenClassicItemsDB, LastSeenClassicMapsDB, LastSeenClassicSettingsCacheDB, LastSeenClassicLootTemplate, LastSeenClassicHistoryDB
+
+L.lua
+Classes\Widget.lua
+Classes\Frame.lua
+DB\DB_Variables.lua
+DB\DB_Events.lua
+DB\DB_IgnoredItems.lua
+DB\DB_IgnoredItemCategories.lua
+DB\DB_WhitelistedItems.lua
+Commands.lua
+Settings.lua
+Handlers\ItemHandler.lua
+Handlers\NameplateHandler.lua
+Handlers\FunctionHandler.lua
+Handlers\CommandHandler.lua
+Handlers\TooltipHandler.lua
+Handlers\MapHandler.lua
+Handlers\KeybindHandler.lua
+Main.lua

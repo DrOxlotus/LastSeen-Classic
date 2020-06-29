@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="LASTSEEN_CLASSIC_OPEN_SETTINGS" header="LASTSEEN_CLASSIC" category="ADDONS">
+		LastSeenClassicKeyPressHandler(GetBindingKey("LASTSEEN_CLASSIC_OPEN_SETTINGS"));
+	</Binding>
+</Bindings>

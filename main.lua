@@ -5,10 +5,10 @@
 
 -- Namespace Variables
 local addon, addonTbl = ...;
-local L = addonTbl.L;
 
 -- Module-Local Variables
 local badDataItemCount = 0;
+local container;
 local currentDate;
 local currentMap;
 local delay = 0.3;
@@ -16,6 +16,7 @@ local epoch = 0;
 local executeCodeBlock = true;
 local frame = CreateFrame("Frame");
 local isMerchantFrameOpen;
+local isOnIsland;
 local isPlayerInCombat;
 local itemID;
 local itemLink;
@@ -26,6 +27,7 @@ local itemType;
 local itemSubType;
 local itemEquipLoc;
 local itemIcon;
+local L = addonTbl.L;
 local playerName;
 local plsEmptyVariables;
 
@@ -33,12 +35,6 @@ for _, event in ipairs(addonTbl.events) do
 	frame:RegisterEvent(event);
 end
 -- Synopsis: Registers all events that the addon cares about using the events table in the corresponding table file.
-
-local function InitializeTable(tbl)
-	tbl = {};
-	return tbl;
-end
--- Synopsis: Used to create EMPTY tables, instead of leaving them nil.
 
 local function IsPlayerInCombat()
 	-- Maps can't be updated while the player is in combat.
@@ -60,7 +56,9 @@ local function EmptyVariables()
 			C_Timer.After(1, function()
 				addonTbl.encounterID = nil;
 				addonTbl.itemSourceCreatureID = nil;
+				addonTbl.questID = nil;
 				addonTbl.target = "";
+				container = "";
 				executeCodeBlock = true;
 				plsEmptyVariables = false;
 			end);
@@ -70,18 +68,57 @@ end
 -- Synopsis: When executed, after 4 seconds, clear or reset the variables.
 
 frame:SetScript("OnEvent", function(self, event, ...)
+
+	if event == "CHAT_MSG_LOOT" then
+		if LastSeenQuestsDB[addonTbl.questID] then return end;
+		
+		local text, name = ...; name = string.match(name, "(.*)-");
+		if name == playerName then
+			text = string.match(text, L["LOOT_ITEM_PUSHED_SELF"] .. "(.*).");
+			if text then
+				if container ~= "" then
+					local itemID, itemType, itemSubType, itemEquipLoc, itemIcon = GetItemInfoInstant(text);
+					itemName = (GetItemInfo(text));
+					itemRarity = select(3, GetItemInfo(text));	
+
+					if itemRarity < addonTbl.rarity then return end;
+					if addonTbl.Contains(addonTbl.whitelistedItems, itemID, nil, nil) then
+						-- Continue
+					elseif addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemType) then return;
+					elseif addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemSubType) then return;
+					elseif addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", itemEquipLoc) then return;
+					elseif addonTbl.Contains(addonTbl.ignoredItems, itemID, nil, nil) then return end;
+					
+					if LastSeenClassicItemsDB[itemID] then
+						addonTbl.AddItem(itemID, text, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Container", container, "Update");
+					else
+						addonTbl.AddItem(itemID, text, itemName, itemRarity, itemType, itemSubType, itemEquipLoc, itemIcon, L["DATE"], addonTbl.currentMap, "Container", container, "New");
+					end
+				end
+			end
+		end
+	end
+	-- Synopsis: When the player is rewarded an item, usually when the player didn't loot anything by action, track it using the source of said item. Typically, we would see this occur in many cases,
+	-- but we really only care about acquisition via creatures like unlootable world bosses.
 	
 	if event == "INSTANCE_GROUP_SIZE_CHANGED" or "ZONE_CHANGED_NEW_AREA" then
-		
-		if IsPlayerInCombat() then
+		if IsPlayerInCombat() then -- Maps can't be updated in combat.
 			while isPlayerInCombat do
 				C_Timer.After(0, function() C_Timer.After(3, function() IsPlayerInCombat() end); end);
 			end
 		end
 		
-		C_Timer.After(0, function() C_Timer.After(3, function() addonTbl.GetCurrentMap() end); end);
+		C_Timer.After(0, function() C_Timer.After(3, function() addonTbl.GetCurrentMap() end); end); -- Wait 3 seconds before asking the game for the new map.
 	end
 	-- Synopsis: Get the player's map when they change zones or enter instances.
+	
+	if event == "ITEM_LOCK_CHANGED" then
+		local bagID, slotID = ...;
+		if tonumber(bagID) and tonumber(slotID) then
+			local _, _, _, _, _, isLootable, _, _, _, id = GetContainerItemInfo(bagID, slotID)
+			if isLootable then container = GetItemInfo(id) end;
+		end
+	end
 	
 	if event == "LOOT_CLOSED" then
 		EmptyVariables();
@@ -116,27 +153,30 @@ frame:SetScript("OnEvent", function(self, event, ...)
 			- Objects
 	]]
 	
+	if event == "MODIFIER_STATE_CHANGED" then
+		local key, down = ...;
+		if down == 1 then
+			if key == "LSHIFT" or key == "RSHIFT" then
+				addonTbl.doNotLoot = true;
+			end
+		else
+			addonTbl.doNotLoot = false;
+		end
+	end
+	-- Synopsis: Allows players to prevent the game from looting items like lockboxes.
+	
 	if event == "NAME_PLATE_UNIT_ADDED" then
 		local unit = ...;
 		addonTbl.AddCreatureByNameplate(unit, L["DATE"]);
 	end
 	-- Synopsis: When a nameplate appears on the screen, pass the GUID down the pipeline so it can be scanned for the creature's name.
 	
-	if event == "PLAYER_LOGIN" and addonTbl.isLastSeenLoaded then
-		if LastSeenClassicMapsDB == nil then LastSeenClassicMapsDB = InitializeTable(LastSeenClassicMapsDB) end;
-		if LastSeenClassicCreaturesDB == nil then LastSeenClassicCreaturesDB = InitializeTable(LastSeenClassicCreaturesDB) end;
-		if LastSeenClassicEncountersDB == nil then LastSeenClassicEncountersDB = InitializeTable(LastSeenClassicEncountersDB) end;
-		if LastSeenClassicItemsDB == nil then LastSeenClassicItemsDB = InitializeTable(LastSeenClassicItemsDB) end;
-		if LastSeenClassicQuestsDB == nil then LastSeenClassicQuestsDB = InitializeTable(LastSeenClassicQuestsDB) end;
-		if LastSeenClassicSettingsCacheDB == nil then LastSeenClassicSettingsCacheDB = InitializeTable(LastSeenClassicSettingsCacheDB) end;
-		if LastSeenClassicLootTemplate == nil then LastSeenClassicLootTemplate = InitializeTable(LastSeenClassicLootTemplate) end;
-		if LastSeenClassicHistoryDB == nil then LastSeenClassicHistoryDB = InitializeTable(LastSeenClassicHistoryDB) end;
-		-- Synopsis: Initialize the tables if they're nil. This is usually only for players that first install the addon.
-		
-		LastSeenClassicIgnoredItemsDB = {};
-		-- Synopsis: Empty tables that will no longer be used. These tables will eventually be removed from the addon altogether.
+	if event == "PLAYER_LOGIN" and addonTbl.isLastSeenClassicLoaded then
+		addonTbl.InitializeSavedVars(); -- Initialize the tables if they're nil. This is usually only for players that first install the addon.
+		EmptyVariables();
 		
 		addonTbl.LoadSettings(true);
+		addonTbl.SetLocale(LastSeenClassicSettingsCacheDB["locale"]); LastSeenClassicSettingsCacheDB["locale"] = addonTbl["locale"];
 		addonTbl.GetCurrentMap();
 		playerName = UnitName("player");
 		print(L["ADDON_NAME"] .. L["INFO_MSG_ADDON_LOAD_SUCCESSFUL"]);
@@ -155,21 +195,9 @@ frame:SetScript("OnEvent", function(self, event, ...)
 				badDataItemCount = badDataItemCount + 1;
 			end
 			-- Synopsis: If the item is found on the addon-controlled ignores table, then remove it from the items table. Sometimes stuff slipped through the cracks.
-			if type(v.itemRarity) == "string" then
-				local temporaryRarity = v.itemRarity;
-				v.itemRarity = v.itemType;
-				v.itemType = temporaryRarity;
-			end
-			-- Synopsis: For a short period of time, itemRarity and itemType were flipped in a function call. This works to correct them and flip them back.
-			if v.itemRarity < 2 then
-				table.insert(addonTbl.removedItems, v.itemLink);
-				LastSeenClassicItemsDB[k] = nil;
-				badDataItemCount = badDataItemCount + 1;
-			end
-			-- Synopsis: If someone used LastSeen2 for a short period of time, then they will have Common (white) quality quest rewards that need to be removed.
 		end
 
-		if badDataItemCount > 0 and addonTbl.mode ~= L["QUIET_MODE"] then
+		if badDataItemCount > 0 and addonTbl.mode ~= GM_SURVEY_NOT_APPLICABLE then
 			print(L["ADDON_NAME"] .. badDataItemCount .. L["ERROR_MSG_BAD_DATA"]);
 			badDataItemCount = 0;
 		end
@@ -185,7 +213,11 @@ frame:SetScript("OnEvent", function(self, event, ...)
 		local unit, target, _, spellID = ...; local spellName = GetSpellInfo(spellID);
 		if unit == string.lower(L["IS_PLAYER"]) then
 			if addonTbl.Contains(L["SPELL_NAMES"], nil, "spellName", spellName) then
-				addonTbl.target = target;
+				if spellName == L["SPELL_NAMES"][2]["spellName"] then -- Fishing
+					addonTbl.target = L["SPELL_NAMES"][2]["spellName"];
+				else
+					addonTbl.target = target;
+				end
 			end
 		end
 	end

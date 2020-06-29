@@ -32,7 +32,7 @@ addonTbl.OnTooltipSetItem = function(tooltip)
 	elseif not isIgnored then if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", select(7, GetItemInfo(itemID))) then isIgnored = true end;
 	elseif not isIgnored then if addonTbl.Contains(addonTbl.ignoredItemCategories, nil, "itemType", select(9, GetItemInfo(itemID))) then isIgnored = true end end;
 	
-	if isIgnored and itemRarity > addonTbl.rarity then
+	if isIgnored and itemRarity >= addonTbl.rarity then
 		tooltip:AddLine("\n" .. L["ADDON_NAME"] .. "|cffffffff" .. L["INFO_MSG_IGNORED_ITEM"] .. "|r");
 		tooltip:Show();
 	end

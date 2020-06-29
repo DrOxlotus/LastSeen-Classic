@@ -11,6 +11,7 @@
 - Quiet mode has been renamed to "N/A".
 - The player can view available commands using the "help" command instead of tossing no arguments to the "man" command.
 - The system-specified rarity is Common (down from Uncommon) for Classic.
+- The item is ignored message no longer shows on Poor quality items.
 
 ### Fixed
 - Loot acquired from containers should now add/update more reliably, and use the container's name instead of "Miscellaneous".

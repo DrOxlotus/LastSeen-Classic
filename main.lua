@@ -70,8 +70,6 @@ end
 frame:SetScript("OnEvent", function(self, event, ...)
 
 	if event == "CHAT_MSG_LOOT" then
-		if LastSeenQuestsDB[addonTbl.questID] then return end;
-		
 		local text, name = ...; name = string.match(name, "(.*)-");
 		if name == playerName then
 			text = string.match(text, L["LOOT_ITEM_PUSHED_SELF"] .. "(.*).");
